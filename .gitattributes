@@ -1,2 +1,114 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+using System;
+
+namespace ToDoList
+{
+    struct Task
+    {
+        public string Description;
+        public bool Completed;
+    }
+
+    struct ToDoList
+    {
+        public Task[] Tasks;
+        public int TaskCount;
+    }
+
+    class Program
+    {
+        static ToDoList CreateToDoList()
+        {
+            ToDoList newList;
+            newList.Tasks = new Task[100];
+            newList.TaskCount = 0;
+            return newList;
+        }
+
+        static void AddTask(ref ToDoList list, string description)
+        {
+            if (list.TaskCount < 100)
+            {
+                Task newTask;
+                newTask.Description = description;
+                newTask.Completed = false;
+                list.Tasks[list.TaskCount++] = newTask;
+                Console.WriteLine($"Task added: {description}");
+            }
+            else
+            {
+                Console.WriteLine("Cannot add more tasks!");
+            }
+        }
+
+        static void CompleteTask(ref ToDoList list, int taskIndex)
+        {
+            if (taskIndex >= 0 && taskIndex < list.TaskCount)
+            {
+                list.Tasks[taskIndex].Completed = true;
+                Console.WriteLine($"Task completed: {list.Tasks[taskIndex].Description}");
+            }
+            else
+            {
+                Console.WriteLine("Invalid task index!");
+            }
+        }
+
+        static void PrintToDoList(ToDoList list)
+        {
+            Console.WriteLine("To-Do List:");
+            for (int i = 0; i < list.TaskCount; ++i)
+            {
+                Console.WriteLine($"{i + 1}) {list.Tasks[i].Description} [{(list.Tasks[i].Completed ? "completed" : "not completed")}]");
+            }
+        }
+
+        static void Main()
+        {
+            ToDoList toDoList = CreateToDoList();
+            int option;
+            string description;
+
+            do
+            {
+                Console.WriteLine("\n #To-Do List program# ");
+                Console.WriteLine("1) Add task");
+                Console.WriteLine("2) Complete task");
+                Console.WriteLine("3) Show tasks");
+                Console.WriteLine("4) Exit");
+                Console.Write("Choose an option: ");
+                if (!int.TryParse(Console.ReadLine(), out option))
+                {
+                    Console.WriteLine("Error: Please enter a valid number.");
+                    continue;
+                }
+
+                switch (option)
+                {
+                    case 1:
+                        Console.Write("Enter your task: ");
+                        description = Console.ReadLine();
+                        AddTask(ref toDoList, description);
+                        break;
+                    case 2:
+                        Console.Write("Enter the index of the completed task: ");
+                        if (!int.TryParse(Console.ReadLine(), out int taskIndex))
+                        {
+                            Console.WriteLine("Error: Please enter a valid number.");
+                            continue;
+                        }
+                        CompleteTask(ref toDoList, taskIndex - 1);
+                        break;
+                    case 3:
+                        PrintToDoList(toDoList);
+                        break;
+                    case 4:
+                        Console.WriteLine("Exiting the program...\nHarun.Sarikuslar");
+                        break;
+                    default:
+                        Console.WriteLine("Error: Invalid option. Please choose a valid option.");
+                        break;
+                }
+            } while (option != 4);
+        }
+    }
+}
